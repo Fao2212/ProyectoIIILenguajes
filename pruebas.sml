@@ -25,7 +25,15 @@ val prop13 = negacion(negacion(variable "p")); (* Resultado: variable "p" *)
 val prop14 = negacion(negacion(constante true)); (* Resultado: constante true *)
 
 (* De Morgan *)
-val prop15 = conjuncion(negacion(variable "p"), negacion(variable "q")); (* Resultado: negacion(disyuncion(variable "p", variable "q")) *) (* ERROR *)
-val prop16 = disyuncion(negacion(variable "p"), negacion(variable "q")); (* Resultado: negacion(conjuncion(variable "p", variable "q")) *) (* ERROR *)
+val prop15 = conjuncion(negacion(variable "p"), negacion(variable "q")); (* Resultado: negacion(disyuncion(variable "p", variable "q")) *)
+val prop16 = disyuncion(negacion(variable "p"), negacion(variable "q")); (* Resultado: negacion(conjuncion(variable "p", variable "q")) *)
 
 (* Complejas *)
+val megaNeg = negacion(negacion(negacion(negacion(constante true)))); (* constante true *)
+val eqComp = equivalencia(constante true, conjuncion(constante true,variable "p")); (*Resultado: equivalencia(constante true,variable "p")*)
+val compl1 = ((variable "p") :=>: ~:((variable "q") :||: (variable "r"))) :&&: ((variable "p" :||: constante false)); (* Resultado conjuncion(implicacion(variable "p", negacion(variable "q", variable "r *)
+val eqCompDoble = equivalencia(disyuncion(constante false,variable "q"),disyuncion(variable "p",constante false)); (*Resultado: equivalencia(variable "q",variable "p")*)
+val impComp = implicacion(disyuncion(constante true, variable "q"),conjuncion(constante false , variable "k")); (*Resultado: implicacion(constante true,constante false)*)
+(* CASOS *)
+val eq = equivalencia(constante true,constante false); (*eq*)
+
