@@ -5,3 +5,6 @@ use "02gen_bools.sml";
 use "03as_vals.sml";
 use "04evalProp.sml";
 use "05taut.sml";
+use "bonita.sml";
+use "fnd.sml";
+use "simpl.sml";
