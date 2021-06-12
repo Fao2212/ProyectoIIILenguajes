@@ -80,8 +80,22 @@ Negaciones
        --Para el evaluador de casos cada uno tendra sus reglas asociadas
               --Las reglas se evaluaran a la prop aplicandose o retornando el valor original
 
------------ Reglas ---------------*)
-(* P ^ P *)
+---------- ---------------*)
+
+(*-------- Agrupaciones -------------*)
+
+(* fun reglasDisyunciones (prop, prop1, prop2) = demorganD (neutroD (inversoD (dominacionD (prop, prop1, prop2))));
+fun reglasConjunciones (prop, prop1, prop2) = demorganC (neutroC (inversoC (dominacionC (prop, prop1, prop2)))); *)
+
+
+
+(*-------- Evaluador de forma -----------
+--Voy a tener que probar en las internas si existe
+--Falta la recursion*)
+
+(*------------- Reglas ---------------*)
+
+fun evaluadorDeForma prop = prop;
 
 fun neutroC (prop, prop1, prop2) = 
     case prop of
@@ -91,16 +105,18 @@ fun neutroC (prop, prop1, prop2) =
         let
             val p = case prop1 of
                         constante cons1 => 
-                            if cons1 then evaluadorDeForma prop2 else evaluadorDeForma prop
-                        | variable var =>
+                            if cons1 then prop2 else prop
+                        | variable _ =>
                             let 
                                 val q = case prop2 of 
                                     constante cons2 =>
-                                            if cons2 then evaluadorDeForma prop1 else evaluadorDeForma prop
-                                    | _ => prop
+                                            if cons2 then  prop1 else  prop
+                                    | _ =>  prop
                             in q end
-                        | _ => evaluadorDeForma prop
-        in evaluadorDeForma p end   
+                        | _ =>  prop
+        in 
+            p 
+        end   
 ;
 
 fun neutroD (prop, prop1, prop2) = 
@@ -111,21 +127,24 @@ fun neutroD (prop, prop1, prop2) =
         let 
             val p = case prop1 of
                         constante cons1 => 
-                            if not cons1 then evaluadorDeForma prop2 else evaluadorDeForma prop
+                            if not cons1 then  prop2 else  prop
                         | variable var =>
                             let 
                                 val q = case prop2 of 
                                         constante cons2 =>
-                                                if not cons2 then evaluadorDeForma prop1 else prop
-                                        | _ => evaluadorDeForma prop
+                                                if not cons2 then  prop1 else  prop
+                                        | _ =>  prop
                             in q end
-                        | _ => evaluadorDeForma prop
-        in p end
+                        | _ =>  prop
+        in 
+            p
+        end  
 ;
 
 fun dominacionC(prop, prop1, prop2) = 
     case prop of 
         constante _ => prop (* Ya esta simplificado al máximo, no simplificar más *)
+    |   variable _  => prop (* Ya esta simplificado al máximo, no simplificar más *)
     |   _           => 
         let 
             val p = case prop1 of 
@@ -135,30 +154,35 @@ fun dominacionC(prop, prop1, prop2) =
                             let 
                                 val q = case prop2 of 
                                             constante cons2 => 
-                                                if not cons2 then constante(false) else prop
-                                            | _ => prop
+                                                if not cons2 then  constante(false) else  prop
+                                            | _ =>  prop
                             in q end
-                        | _   => prop
-        in p end
+                        | _   =>  prop
+        in 
+            p
+        end  
 ;
 
 fun dominacionD (prop, prop1, prop2) = 
     case prop of
         constante _ => prop (* Ya esta simplificado al máximo, no simplificar más *)
+    |   variable  _ => prop (* Ya esta simplificado al máximo, no simplificar más *)
     |   _           => 
         let 
             val p = case prop1 of 
                         constante cons1 => 
-                            if cons1 then constante(true) else prop      
+                            if cons1 then constante(true) else  prop      
                         | variable var => 
                             let
                                 val q = case prop2 of 
                                             constante cons2 => 
-                                                if cons2 then constante(true) else prop
-                                            | _ => prop
+                                                if cons2 then constante(true) else  prop
+                                            | _ =>  prop
                             in q end
-                        | _  => prop
-        in p end
+                        | _  =>  prop
+        in 
+            p
+        end  
 ;
 
 (*Tengo dos prop
@@ -166,59 +190,65 @@ fun dominacionD (prop, prop1, prop2) =
 --Y si la negacion es igual a la prop1 entonces se retorna constante(false/true)*)
 (* ~P ^ Q *)
 fun inversoC (prop, prop1, prop2) =
-        case prop of 
-            constante _ => prop
-        |   _           =>
-            let
-                val p = case prop1 of 
-                            variable _ => 
-                                    let 
-                                        val p = case prop2 of 
-                                                negacion neg1 =>
-                                                    if neg1 = prop1 then  
-                                                            constante(false) 
-                                                    else prop
-                                                | _ => prop
-                                    in p end
-                        |   negacion neg2  => 
-                                    let 
-                                        val p = case prop2 of 
-                                                variable _ =>
-                                                if neg2 = prop2 then 
-                                                    constante(false) 
-                                                else prop
-                                                | _ => prop
-                                    in p end
-                        | _ => prop
-            in p end     
+    case prop of 
+        constante _ => prop (* Ya esta simplificado al máximo, no simplificar más *)
+    |   variable  _ => prop (* Ya esta simplificado al máximo, no simplificar más *)
+    |   _           =>
+        let
+            val p = case prop1 of 
+                        variable _ => 
+                                let 
+                                    val q = case prop2 of 
+                                            negacion neg1 =>
+                                                if neg1 = prop1 then  
+                                                         constante(false) 
+                                                else  prop
+                                            | _ =>  prop
+                                in q end
+                    |   negacion neg2  => 
+                                let 
+                                    val r = case prop2 of 
+                                            variable _ =>
+                                            if neg2 = prop2 then 
+                                                 constante(false) 
+                                            else  prop
+                                            | _ =>  prop
+                                in r end
+                    | _ =>  prop
+        in 
+            p 
+        end     
 ;
 
 fun inversoD (prop, prop1, prop2) =
-        case prop of 
-            constante _ => prop
-        |   _           =>
-            let 
-                val p = case prop1 of 
-                            variable _ => 
-                                    let 
-                                    val p = case prop2 of 
-                                                negacion neg1 =>
-                                                        if neg1 = prop1 then  
-                                                                constante(true) 
-                                                        else prop
-                                                | _ => prop
-                                    in p end
-                        |   negacion neg2  => 
-                                    let 
-                                    val p = case prop2 of 
-                                                variable _ =>
-                                                        if neg2 = prop2 then 
-                                                                constante(true) 
-                                                        else prop
-                                                | _ => prop
-                                    in p end
-                        |   _ => prop
-            in p end          
+    case prop of 
+        constante _ => prop (* Ya esta simplificado al máximo, no simplificar más *)
+    |   variable  _ => prop (* Ya esta simplificado al máximo, no simplificar más *)
+    |   _           =>
+        let 
+            val p = case prop1 of 
+                        variable _ => 
+                                let 
+                                val q = case prop2 of 
+                                            negacion neg1 =>
+                                                    if neg1 = prop1 then  
+                                                             constante(true) 
+                                                    else  prop
+                                            | _ =>  prop
+                                in q end
+                    |   negacion neg2  => 
+                                let 
+                                val r = case prop2 of 
+                                            variable _ =>
+                                                    if neg2 = prop2 then 
+                                                        constante(true) 
+                                                    else prop
+                                            | _ => prop
+                                in r end
+                    |   _ =>  prop
+        in 
+            p
+        end          
 ;
 
 (*Una sola prop
@@ -236,24 +266,28 @@ fun dobleNegacion prop = (*Completar*)
   Y se devuelva la operacion contrararia(valordenegacion1,valordenegacion2)*)
 
 fun demorganC (prop, prop1, prop2)= 
-        case prop of 
-            constante _ => prop
-        |   _           =>
-            let
-                val p = case prop1 of
-                            negacion p1 =>
-                                let
-                                    val q = case prop2 of
-                                                negacion p2 => negacion(disyuncion(p1,p2))
-                                            | _ => prop
-                                in q end
-                        |   _ => prop
-            in p end
+    case prop of 
+        constante _ => prop (* Ya esta simplificado al máximo, no simplificar más *)
+    |   variable  _ => prop (* Ya esta simplificado al máximo, no simplificar más *)
+    |   _           =>
+        let
+            val p = case prop1 of
+                        negacion p1 =>
+                            let
+                                val q = case prop2 of
+                                            negacion p2 => negacion(disyuncion(p1,p2))
+                                        | _ => prop
+                            in q end
+                    |   _ => prop
+        in 
+            p
+        end  
 ;
 
 fun demorganD (prop, prop1, prop2) = 
     case prop of
-        constante _ => prop
+        constante _ => prop (* Ya esta simplificado al máximo, no simplificar más *)
+    |   variable  _ => prop (* Ya esta simplificado al máximo, no simplificar más *)
     |   _           =>
         let
             val p = case prop1 of 
@@ -264,44 +298,50 @@ fun demorganD (prop, prop1, prop2) =
                                         |   _           => prop
                             in q end
                         | _ => prop
-        in p end
+        in 
+            p
+        end  
 ;
 
-
-(*-------- Agrupaciones -------------*)
-
-(* fun aplicarReglas (f:Proposicion -> Proposicion -> Proposicion -> Proposicion) = fn (prop:Proposicion) => fn (prop1: Proposicion) => fn (prop2:Proposicion) => f prop prop1 prop2; *)
-fun reglasDisyunciones (prop, prop1, prop2) = demorganD neutroD inversoD dominacionD (prop, prop1, prop2);
-fun reglasConjunciones (prop, prop1, prop2) = demorganC neutroC inversoC dominacionC (prop, prop1, prop2);
-
 fun reglasDisyunciones (prop, prop1, prop2) = demorganD (
-                                                        neutroD (
-                                                               inversoD (
-                                                                         dominacionD (prop, prop1, prop2), 
-                                                                         prop1, prop2),
-                                                               prop1, prop2), 
+                                                        inversoD (
+                                                                neutroD (
+                                                                        dominacionD (prop, prop1, prop2), 
+                                                                        prop1, prop2),
+                                                                prop1, prop2), 
                                                         prop1, prop2
                                                         ); 
 fun reglasConjunciones (prop, prop1, prop2) = demorganC (
-                                                        neutroC (
-                                                               inversoC (
-                                                                      dominacionC(prop,prop1,prop2),prop1,prop2),prop1,prop2),prop1,prop2);
+                                                        inversoC (
+                                                                neutroC (
+                                                                        dominacionC(prop,prop1,prop2),prop1,prop2),prop1,prop2),prop1,prop2);
 fun reglasNegaciones prop = dobleNegacion prop;     
 
-(*-------- Evaluador de forma -----------
---Voy a tener que probar en las internas si existe
---Falta la recursion*)
-
-fun evaluadorDeForma prop = 
-       case prop of  variable var => prop
-                     |constante cons => prop 
-                     |negacion prop1 => evaluadorDeForma (reglasNegaciones prop1)
-                     |disyuncion (prop1,prop2) => evaluadorDeForma (reglasDisyunciones (prop, prop1, prop2))
-                     |conjuncion (prop1,prop2) => evaluadorDeForma (reglasConjunciones (prop, prop1, prop2))
-                     |implicacion (prop1,prop2) => 
-                            let val p = (evaluadorDeForma prop1) and q = (evaluadorDeForma prop2) 
-                            in p :=>: q end
-                     |equivalencia (prop1,prop2) =>
-                            let val p = (evaluadorDeForma prop1) and q = (evaluadorDeForma prop2) 
-                            in p :<=>: q end
+fun simpl prop =
+let
+    fun evaluadorDeForma prop = 
+        case prop of 
+                        negacion prop1 => (reglasNegaciones prop1)
+        |            disyuncion (prop1, prop2) => (reglasDisyunciones (prop, prop1, prop2))
+        |            conjuncion (prop1, prop2) => (reglasConjunciones (prop, prop1, prop2))
+        |            _ => prop
+in
+    if prop = (evaluadorDeForma prop) then 
+        let
+            val p = case prop of 
+                    negacion prop1 => evaluadorDeForma prop1
+                |   disyuncion (prop1, prop2) => (evaluadorDeForma prop1) :||: (evaluadorDeForma prop2)
+                |   conjuncion (prop1, prop2) => (evaluadorDeForma prop1) :&&: (evaluadorDeForma prop2)
+                |   implicacion (prop1, prop2) => 
+                        let val p = (evaluadorDeForma prop1) and q = (evaluadorDeForma prop2) 
+                        in p :=>: q end
+                |   equivalencia (prop1, prop2) =>
+                        let val p = (evaluadorDeForma prop1) and q = (evaluadorDeForma prop2) 
+                        in p :<=>: q end
+                |   _ => prop
+        in
+            p
+        end
+    else prop
+end
 ;
