@@ -30,6 +30,8 @@ fun crear_variable_positiva (var, bool) = if bool then variable var else ~:(vari
 
 fun conjuntar prop1 prop2 = prop1 :&&: prop2;
 
+fun 
+
 fun fnd prop =
     let
         (* variables de trabajo *)
@@ -43,12 +45,9 @@ fun fnd prop =
         fun unir_por_conjuncion [] = constante true
         |   unir_por_conjuncion (head::tail) = if tail = [] then head else head :&&: unir_por_conjuncion tail
 
-        fun unir_por_conjuncion [] = constante true
-        |   unir_por_conjuncion (head::tail) = head :&&: unir_por_conjuncion tail
-
         fun unir_por_disyuncion prop1 prop2 = prop1 :||: prop2
 
-        fun recorrer []                  = prop (* caso de cero variables *)
+        fun recorrer []                  = constante true (* caso de cero variables *)
         |   recorrer (fila :: mas_filas) = 
             let
                 val asociacion = as_vals variables fila
@@ -56,8 +55,10 @@ fun fnd prop =
             in
                 if n = 1 then (* caso de una variable *)
                     prop
+                else if mas_filas = [] then
+                    unir_por_conjuncion (tomar_variables_atomicas asociacion)
                 else if resultado_fila then (* caso de 2 o mas variables *)
-                    
+                    unir_por_disyuncion (unir_por_conjuncion (tomar_variables_atomicas asociacion)) (recorrer mas_filas)
                 else
                     recorrer mas_filas
             end
@@ -65,3 +66,12 @@ fun fnd prop =
         recorrer lista_combinaciones_booleanas
     end
 ;
+
+(* 
+p = v, q = v => v
+p = v, q = f => f
+p = f, q = v => v
+p = f, q = f => v
+
+(p ^ q) v (-p ^ q) v (-p ^ -q)
+*)
