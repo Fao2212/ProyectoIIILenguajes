@@ -82,12 +82,34 @@ Negaciones
 
 ----------- Reglas ---------------
 
-fun neutroD prop prop1 prop2 = 
+fun neutroC prop prop1 prop2 = 
        case prop1 of constante cons1 => 
        if cons1 then prop2 else 
               case prop2 of constante cons2 =>
               if cons2 then prop1 else prop
 ;
+
+fun neutroD prop prop1 prop2 = 
+       case prop1 of constante cons1 => 
+       if cons1 = false then prop2 else 
+              case prop2 of constante cons2 =>
+              if cons2 = false then prop1 else prop
+;
+
+fun dominacionC prop prop1 prop2 = 
+       case prop1 of constante cons1 => 
+       if cons1 then constante(false) else 
+              case prop2 of constante cons2 =>
+              if cons2 then constante(false) else prop
+;
+
+fun dominacionD prop prop1 prop2 = 
+       case prop1 of constante cons1 => 
+       if cons1 = false then constante(true) else 
+              case prop2 of constante cons2 =>
+              if cons2 = false then constante(true) else prop
+;
+
 
 -------- Agrupaciones -------------
 fn reglasDisyunciones prop1 prop2 => neutroD inversoD dominacionD prop1,prop2; 
