@@ -1,11 +1,11 @@
-//Estrategia
+(*//Estrategia
 //Se comienza pensando que es necesario considerar solamente la proposicion, se intenta generalizar la funcion
 //Se piensa en crear una tabla de presedencia, se hacen varios intentos sin resultado
 //Se toma como base ejemplos del profesor donde se utilizan "tecnicas" de sml
 //Se nota que se puede usar algo parecido a la funcion imprimir del profesor.
 //Se toma y se hacen cambios utilizando la tabla de presedencia
 //Se crean las funciones una por uno por separado y luego se crea una funcion bonita que contiene a las hechas previamente
-//Se hace que bonita inicie en 0 para que sea mas facilmente utilizada por los usuario. Se hacen varias pruebas.
+//Se hace que bonita inicie en 0 para que sea mas facilmente utilizada por los usuario. Se hacen varias pruebas.*)
 
 
 fun bonita prop =
@@ -31,13 +31,13 @@ fun bonita prop =
                 end   
         |   conjuncion (prop1, prop2)   => 
                 let val presedencia = getPresedencia prop
-                in case presedencia < presedenciaAnterior of true => "(" ^ imprimirB (prop1,presedencia)^ "/\ " ^ imprimirB (prop2,presedencia) ^ ")"|
-                                                            false => "" ^ imprimirB (prop1,presedencia) ^"/\ "^imprimirB (prop2,presedencia) ^ ""
+                in case presedencia < presedenciaAnterior of true => "(" ^ imprimirB (prop1,presedencia)^ "&" ^ imprimirB (prop2,presedencia) ^ ")"|
+                                                            false => "" ^ imprimirB (prop1,presedencia) ^"&"^imprimirB (prop2,presedencia) ^ ""
                 end
         |   disyuncion (prop1, prop2)   => 
                 let val presedencia = getPresedencia prop
-                in case presedencia < presedenciaAnterior of true => "(" ^ imprimirB (prop1,presedencia) ^ "\/" ^ imprimirB (prop2,presedencia) ^ ")"|
-                                                            false => "" ^ imprimirB (prop1,presedencia) ^ "\/" ^ imprimirB (prop2,presedencia) ^ ""
+                in case presedencia < presedenciaAnterior of true => "(" ^ imprimirB (prop1,presedencia) ^ "|" ^ imprimirB (prop2,presedencia) ^ ")"|
+                                                            false => "" ^ imprimirB (prop1,presedencia) ^ "|" ^ imprimirB (prop2,presedencia) ^ ""
                 end
         |   implicacion (prop1, prop2)  => 
                 let val presedencia = getPresedencia prop
@@ -53,7 +53,7 @@ fun bonita prop =
     end
 ;
 
-//Pruebas para bonita
+(*//Pruebas para bonita*)
 
 val pru1 = negacion(conjuncion(variable "x",variable "y"));
 val pru2 = conjuncion(negacion(variable "x"),variable "y");
