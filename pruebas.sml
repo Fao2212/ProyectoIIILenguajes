@@ -36,4 +36,5 @@ val eqCompDoble = equivalencia(disyuncion(constante false,variable "q"),disyunci
 val impComp = implicacion(disyuncion(constante true, variable "q"),conjuncion(constante false , variable "k")); (*Resultado: implicacion(constante true,constante false)*)
 (* CASOS *)
 val eq = equivalencia(constante true,constante false); (*eq*)
-
+val compl2 = ((variable "p") :=>: (variable "q")) :&&: (~:((variable "p") :=>: (variable "q"))) (* Resultado: constante false *)
+val compl3 = ((variable "p") :=>: (variable "q")) :||: (~:((variable "p") :=>: (variable "q"))) (* Resultado: constante true *)
