@@ -8,3 +8,4 @@ use "05taut.sml";
 use "bonita.sml";
 use "fnd.sml";
 use "simpl.sml";
+use "pruebas.sml";

@@ -71,5 +71,10 @@ val compl2 = ((variable "p") :=>: (variable "q")) :&&: (~:((variable "p") :=>: (
 (* Resultado: constante false *)
 val compl3 = ((variable "p") :=>: (variable "q")) :||: (~:((variable "p") :=>: (variable "q"))) 
 (* Resultado: constante true *)
-val compl4 = ~:(~:((~:((variable "p"):||:(variable "q"))):&&:((variable "p"):&&:(~:(variable "q")))))
-
+val compl4 = ~:(~:((~:((variable "p"):||:(variable "q"))):&&:((variable "p"):&&:(~:(variable "p")))))
+(* Resultado: constante false *)
+val compl5 = ~:( (~:(variable "p")) :&&: (~:((variable "q") :||: (variable "p"))) )
+(* Resultado: disyuncion(variable "p", disyuncion(variable "q", variable "p")) *)
+val compl6 = ~:( ( (~:(variable "p")) :&&: (~:(((variable "q") :||: (variable "r")))) ) )
+(* Resultado: disyuncion(variable "p", disyuncion(variable "q", variable "r"))) *)
+val compl7 = (~:((variable "p") :&&: (constante false))) :=>: (~: ( (~:(variable "r")) :&&: (~:(variable "q"))))

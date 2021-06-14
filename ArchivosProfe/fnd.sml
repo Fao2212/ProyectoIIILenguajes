@@ -43,7 +43,7 @@ fun fnd prop =
 
         fun unir_por_disyuncion prop1 prop2 = prop1 :||: prop2
 
-        fun recorrer []                  = constante true (* caso de cero variables *)
+        fun recorrer []                  = prop (* caso de cero variables *)
         |   recorrer (fila :: mas_filas) = 
             let
                 val asociacion = as_vals variables fila
@@ -51,7 +51,7 @@ fun fnd prop =
             in
                 if n = 1 then (* caso de una variable *)
                     prop
-                else if mas_filas = [] then
+                else if resultado_fila andalso mas_filas = [] then
                     unir_por_conjuncion (tomar_variables_atomicas asociacion)
                 else if resultado_fila then (* caso de 2 o mas variables *)
                     unir_por_disyuncion (unir_por_conjuncion (tomar_variables_atomicas asociacion)) (recorrer mas_filas)
