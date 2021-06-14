@@ -1,97 +1,3 @@
-(*//Crear una funcion que por orden vaya aplicando y que devuelva la mas corta?
-
-//Recibo una proposicion
-//Se tiene que simplificar
-//Cambia la forma de 
-
-//Empiezo por recordar como funciona la simplificacion. Necesito los valores?
-//Cuando recuerdo las reglas voy haciendo una de las reglas una por una
-
-Neutro P o FALSO / FALSO o P
-       P y VERDADERO  / VERDADERO ^ P  = P
-
-INVERSO P o NO(P) / NO(P) o P = VERDADERO
-       P y NO(P) / NO(P) y P = FALSO
-
-DOMINACION P y FALSO / FALSO y P = FALSO
-            P o VERDADERO / VERDADERO o P = VERDADERO
-
-//Recibe una proposicion y devuelve una proposicion con los valores 
-
-//Tengo que evaluar?
-
-//Usar como filtros*)
-
-(*fun neutro(prop,prop1,prop2) =
-    let 
-    val prop1Value = evalProp(prop1)
-    val prop2Value = evalProp(prop2)
-    in
-        case prop1Value of false => prop2|
-                           true =>
-                           case prop2Value of false => prop1|
-                                    true => prop
-    end
-;
-
-fun neutro(prop,prop1,prop2) =
-    let 
-    val prop1Value = prop1
-    val prop2Value = prop2
-    in
-        if prop1Value then if prop2Value then prop else prop1 else prop2
-    end
-;
-
-
-fun test a = 
-       let
-       val p = a
-       val c = 0
-       in
-              if p>c then if c > 0 then "buajj" else "bombo" else "lmao"
-       end
-;*)
-                   
-(*----------------------------------------------------------------
-
-Reconsiderarando
-Necesito un evaluador de forma
-Cuando identifico la forma entonces evaluo los parametros.
-Los valores que me importan dependen de la regla
-Las reglas son evaluadores de las partes de las proposiciones
-
-//Agrupando reglas
-Disyunciones
-       -Neutro       
-       -Inverso
-       -Domincaion
-Conjunciones
-       -Neutro
-       -Inverso
-       -Dominacion
-Implicaciones
-       -Contrapositiva
-       -Imp/Dis
-Negaciones
-       -DeMorgan
-
---Para el evaluador de forma solo vamos a necesitar 4 casos
-       --Para el evaluador de casos cada uno tendra sus reglas asociadas
-              --Las reglas se evaluaran a la prop aplicandose o retornando el valor original
-
----------- ---------------*)
-
-(*-------- Agrupaciones -------------*)
-
-(* fun reglasDisyunciones (prop, prop1, prop2) = demorganD (neutroD (inversoD (dominacionD (prop, prop1, prop2))));
-fun reglasConjunciones (prop, prop1, prop2) = demorganC (neutroC (inversoC (dominacionC (prop, prop1, prop2)))); *)
-
-
-
-(*-------- Evaluador de forma -----------
---Voy a tener que probar en las internas si existe
---Falta la recursion*)
 
 (*------------- Reglas ---------------*)
 
@@ -181,10 +87,6 @@ fun neutroD (prop, prop1, prop2) =
         end  
 ;
 
-(*Tengo dos prop
---Solo se aplica si una es variable y otra negacion
---Y si la negacion es igual a la prop1 entonces se retorna constante(false/true)*)
-
 fun inversoC (prop, prop1, prop2) =
     case prop of 
         constante _ => prop (* Ya esta simplificado al máximo, no simplificar más *)
@@ -231,22 +133,38 @@ fun inversoD (prop, prop1, prop2) =
         end         
 ;
 
-(*Una sola prop
--- Ya se sabe que prop es una negación porque viene desde reglasNegacion
---si es una negacion entonces 
---devuelva lo de adentro
-*)
-
-fun dobleNegacion prop = (* REVISAR Se esta devolviendo var no la prop faltan condiciones*)
+(* fun dobleNegacion prop = 
     case prop of negacion var1 => var1
     | _ => negacion(prop)
+;  *)
+
+fun dobleNegacion prop = 
+    case prop of 
+        negacion neg1 => 
+            let 
+                val p = case neg1 of
+                            negacion neg2 => neg2
+                        |   _ => negacion(neg1)
+            in p end
+    | _ => prop
 ; 
 
-(*Si la prop que recibimos son 2 Proporsiciones
-  Donde la primera y la segunda tienen que ser negaciones
-  Y se devuelva la operacion contrararia(valordenegacion1,valordenegacion2)*)
+(* 
+   Si se usa la versión de más específico a más general solo se puede usar al final de la simplificacicón.
+   En cambio, si se usa la versión de más general a más específico se puede usar en todo el proceso
+   de simplificación
+*)
+fun negacionConstante prop = 
+    case prop of 
+        negacion neg => 
+        let 
+            val p = case neg of
+                        constante cons => if cons then constante false else constante true
+                    |   _ => prop
+        in p end 
+    |   _ => prop
+;
 
-(* ( ~ p& ~ (q|r)) *)
 fun demorganC (prop, prop1, prop2)= 
     case prop of 
         constante _ => prop (* Ya esta simplificado al máximo, no simplificar más *)
@@ -299,7 +217,12 @@ fun implicacionDisyuncion (prop, prop1, prop2) =
     case prop of
         constante _ => prop
     |   variable _  => prop
-    |   _           => (~:prop1) :||: prop2
+    |   _           => 
+        let 
+            val p = case prop1 of
+                        negacion p1 => (p1):||:prop2
+                    |   _ => (~:prop1):||:prop2
+        in p end
 ;
 
 fun reglasDisyunciones (prop, prop1, prop2) = demorganD (
@@ -329,15 +252,17 @@ fun reglasConjunciones (prop, prop1, prop2) = demorganC (
                                                                     prop1,prop2
                                                                   ),
                                                          prop1, prop2);
+                                                         
 fun reglasNegaciones prop = dobleNegacion prop;     
 
 fun reglasImplicaciones (prop, prop1, prop2) = implicacionDisyuncion (prop, prop1, prop2);
 
+(* Versión 1: de simplificación más general a más específica *)
 fun simpl prop =
 let
     fun evaluadorDeForma prop = 
         case prop of 
-                     negacion prop1 => reglasNegaciones prop1
+                     negacion prop1 => reglasNegaciones prop
         |            disyuncion (prop1, prop2) => reglasDisyunciones (prop, prop1, prop2)
         |            conjuncion (prop1, prop2) => reglasConjunciones (prop, prop1, prop2)
         |            implicacion (prop1, prop2) => reglasImplicaciones (prop, prop1, prop2)
@@ -346,10 +271,10 @@ let
     val resultado = evaluadorDeForma prop
     
 in 
-    (* No pudo simplificar *)
+    (* No pudo simplificar, intente simplificar sus partes internas *)
     if prop = resultado then 
         let
-            val p = case prop of (* Ver si internamente se puede siplificar más *)
+            val p = case prop of 
                     negacion prop1 => 
                         let val p = (simpl prop1)
                         in (~: p) end
@@ -367,11 +292,50 @@ in
                         in (p :<=>: q) end (* En teoría no ocupa evaluador de forma *)
                 |   _ => prop
         in
-            evaluadorDeForma p
+           evaluadorDeForma p
         end
     else (*Simplificó, pero esta totalmente simplificado ????*)
-        evaluadorDeForma (simpl resultado)
+        simpl (simpl resultado)
 end
 ;
 
-(* ~ ( ~ p& ~ (q|r)) *) 
+(* Versión 2: de simplificación más específica a más general *)
+fun simpl prop =
+let
+    fun evaluadorDeForma prop = 
+        case prop of
+                negacion _                 => reglasNegaciones prop
+        |       disyuncion (prop1, prop2)  => reglasDisyunciones (prop, prop1, prop2)
+        |       conjuncion (prop1, prop2)  => reglasConjunciones (prop, prop1, prop2)
+        |       implicacion (prop1, prop2) => reglasImplicaciones (prop, prop1, prop2)
+        |       _                          => prop
+    
+in 
+
+    let
+        val p = case prop of 
+                negacion prop1 => 
+                    let val p = evaluadorDeForma (simpl prop1)
+                    in evaluadorDeForma (~:p) end
+            |   disyuncion (prop1, prop2) => 
+                    let val p = evaluadorDeForma (simpl prop1) and q = evaluadorDeForma (simpl prop2)
+                    in evaluadorDeForma (p :||: q) end
+            |   conjuncion (prop1, prop2) => 
+                    let val p = evaluadorDeForma (simpl prop1) and q = evaluadorDeForma (simpl prop2)
+                    in evaluadorDeForma (p :&&: q) end 
+            |   implicacion (prop1, prop2) => 
+                    let val p = evaluadorDeForma (simpl prop1) and q = evaluadorDeForma (simpl prop2) 
+                    in evaluadorDeForma (evaluadorDeForma (p :=>: q)) end
+            |   equivalencia (prop1, prop2) =>
+                    let val p = evaluadorDeForma (simpl prop1) and q = evaluadorDeForma (simpl prop2) 
+                    in (p :<=>: q) end (* En teoría no ocupa evaluador de forma *)
+            |   _ => evaluadorDeForma prop
+    in
+        evaluadorDeForma p
+    end
+end
+;
+
+(*  ~ (p&false) => ~ ( ~ r& ~ q) *) 
+
+(* ~ false *)
