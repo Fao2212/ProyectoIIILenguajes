@@ -225,6 +225,23 @@ fun implicacionDisyuncion (prop, prop1, prop2) =
         in p end
 ;
 
+fun implicacionConstante (prop, prop1, prop2) = 
+    case prop of
+        constante _ => prop
+    |   variable _  => prop
+    |   _ => 
+        let
+          val p = case prop1 of
+                        constante cons => if cons then prop2 else constante true
+                  |     _ => 
+                        let
+                            val p = case prop2 of 
+                                        constante cons => if cons then constante true else ~:prop1
+                                    |   _              => prop
+                        in p end
+        in p end
+;
+
 fun reglasDisyunciones (prop, prop1, prop2) = demorganD (
                                                          inversoD ( 
                                                                    idempotencia ( 
@@ -255,7 +272,10 @@ fun reglasConjunciones (prop, prop1, prop2) = demorganC (
                                                          
 fun reglasNegaciones prop = dobleNegacion (negacionConstante prop);     
 
-fun reglasImplicaciones (prop, prop1, prop2) = implicacionDisyuncion (prop, prop1, prop2);
+fun reglasImplicaciones (prop, prop1, prop2) = implicacionDisyuncion (implicacionConstante (prop, 
+                                                                                            prop1, prop2),
+                                                                      prop1,
+                                                                      prop2);
 
 (* Versión 1: de simplificación más general a más específica *)
 fun simpl prop =
