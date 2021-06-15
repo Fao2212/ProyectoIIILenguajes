@@ -26,29 +26,29 @@ fun bonita prop =
         |   variable nombre             => nombre
         |   negacion prop1              =>
                 let val presedencia = getPresedencia prop
-                in case presedencia < presedenciaAnterior of true => " ~ (" ^ imprimirB  (prop1,presedencia) ^ ")"|
-                                                            false => " ~ " ^ imprimirB  (prop1,presedencia) ^ ""
+                in case presedencia < presedenciaAnterior of true => "~(" ^ imprimirB  (prop1,presedencia) ^ ")"|
+                                                            false => "~" ^ imprimirB  (prop1,presedencia) ^ ""
                 end   
         |   conjuncion (prop1, prop2)   => 
                 let val presedencia = getPresedencia prop
-                in case presedencia < presedenciaAnterior of true => "(" ^ imprimirB (prop1,presedencia) ^ "/\\" ^ imprimirB (prop2,presedencia) ^ ")":string| 
-                                                             false => "" ^ imprimirB (prop1,presedencia) ^ "/\\" ^ imprimirB (prop2,presedencia) ^ "":string
+                in case presedencia < presedenciaAnterior of true => "(" ^ imprimirB (prop1,presedencia) ^ " /\\ " ^ imprimirB (prop2,presedencia) ^ ")":string| 
+                                                             false => "" ^ imprimirB (prop1,presedencia) ^ " /\\ " ^ imprimirB (prop2,presedencia) ^ "":string
                 end
         |   disyuncion (prop1, prop2)   => 
                 let val presedencia = getPresedencia prop
-                in case presedencia < presedenciaAnterior of true => "(" ^ imprimirB (prop1, presedencia) ^ "\\/" ^ imprimirB (prop2,presedencia) ^ ")":string
+                in case presedencia < presedenciaAnterior of true => "(" ^ imprimirB (prop1, presedencia) ^ " \\/ " ^ imprimirB (prop2,presedencia) ^ ")":string
                 |
-                                                            false => "" ^ imprimirB (prop1,presedencia) ^ "\\/" ^ imprimirB (prop2,presedencia) ^ "":string
+                                                            false => "" ^ imprimirB (prop1,presedencia) ^ " \\/ " ^ imprimirB (prop2,presedencia) ^ "":string
                 end
         |   implicacion (prop1, prop2)  => 
                 let val presedencia = getPresedencia prop
-                in case presedencia < presedenciaAnterior of true => "(" ^ imprimirB (prop1,presedencia) ^ "=>" ^ imprimirB (prop2,presedencia) ^ ")"|
-                                                            false => "" ^ imprimirB (prop1,presedencia) ^ "=>" ^ imprimirB (prop2,presedencia) ^ ""
+                in case presedencia < presedenciaAnterior of true => "(" ^ imprimirB (prop1,presedencia) ^ " => " ^ imprimirB (prop2,presedencia) ^ ")"|
+                                                            false => "" ^ imprimirB (prop1,presedencia) ^ " => " ^ imprimirB (prop2,presedencia) ^ ""
                 end
         |   equivalencia (prop1, prop2) =>
                 let val presedencia = getPresedencia prop
-                in case presedencia < presedenciaAnterior of true => "(" ^ imprimirB(prop1,presedencia) ^ "<=>" ^ imprimirB (prop2,presedencia) ^ ")"|
-                                                            false => "" ^ imprimirB(prop1,presedencia) ^ "<=>" ^ imprimirB (prop2,presedencia) ^ ""
+                in case presedencia < presedenciaAnterior of true => "(" ^ imprimirB(prop1,presedencia) ^ " <=> " ^ imprimirB (prop2,presedencia) ^ ")"|
+                                                            false => "" ^ imprimirB(prop1,presedencia) ^ " <=> " ^ imprimirB (prop2,presedencia) ^ ""
                 end
     in print (imprimirB(prop,primeraPresedencia))
     end
