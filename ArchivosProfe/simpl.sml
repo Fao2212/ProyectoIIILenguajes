@@ -283,9 +283,9 @@ let
     fun evaluadorDeForma prop = 
         case prop of 
                      negacion prop1 => reglasNegaciones prop
-        |            disyuncion (prop1, prop2) => reglasDisyunciones (prop, prop1, prop2)
-        |            conjuncion (prop1, prop2) => reglasConjunciones (prop, prop1, prop2)
-        |            implicacion (prop1, prop2) => reglasImplicaciones (prop, prop1, prop2)
+        |            disyuncion (prop1, prop2) => reglasDisyunciones (prop, negacionConstante prop1, negacionConstante prop2)
+        |            conjuncion (prop1, prop2) => reglasConjunciones (prop, negacionConstante prop1, negacionConstante prop2)
+        |            implicacion (prop1, prop2) => reglasImplicaciones (prop, negacionConstante prop1, negacionConstante prop2)
         |            _ => prop
     
     val resultado = evaluadorDeForma prop
