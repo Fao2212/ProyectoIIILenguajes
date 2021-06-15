@@ -12,13 +12,14 @@ fun bonita prop =
     let val primeraPresedencia = 0
     fun getPresedencia prop =
     case prop of
-              constante c=> 0 |
-              variable v=> 0 |
-              negacion n=> 30 |
-              conjuncion c=> 15 |
-              disyuncion d=> 6 |
-              implicacion i=> 3 |
-              equivalencia e => 0 
+              constante c    => 0  
+        |     variable v     => 0
+        |     negacion n     => 30 
+        |     conjuncion c   => 15 
+        |     disyuncion d   => 6  
+        |     implicacion i  => 3  
+        |     equivalencia e => 0 
+        
     fun imprimirB (prop,presedenciaAnterior) =
         case prop of
             constante false             => "false"
