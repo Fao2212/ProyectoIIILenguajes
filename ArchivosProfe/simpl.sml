@@ -253,7 +253,7 @@ fun reglasConjunciones (prop, prop1, prop2) = demorganC (
                                                                   ),
                                                          prop1, prop2);
                                                          
-fun reglasNegaciones prop = dobleNegacion prop;     
+fun reglasNegaciones prop = dobleNegacion (negacionConstante prop);     
 
 fun reglasImplicaciones (prop, prop1, prop2) = implicacionDisyuncion (prop, prop1, prop2);
 
@@ -305,13 +305,12 @@ let
     fun evaluadorDeForma prop = 
         case prop of
                 negacion _                 => reglasNegaciones prop
-        |       disyuncion (prop1, prop2)  => reglasDisyunciones (prop, prop1, prop2)
-        |       conjuncion (prop1, prop2)  => reglasConjunciones (prop, prop1, prop2)
-        |       implicacion (prop1, prop2) => reglasImplicaciones (prop, prop1, prop2)
+        |       disyuncion (prop1, prop2)  => reglasDisyunciones (prop, negacionConstante prop1, negacionConstante prop2)
+        |       conjuncion (prop1, prop2)  => reglasConjunciones (prop, negacionConstante prop1, negacionConstante prop2)
+        |       implicacion (prop1, prop2) => reglasImplicaciones (prop, negacionConstante prop1, negacionConstante prop2)
         |       _                          => prop
     
 in 
-
     let
         val p = case prop of 
                 negacion prop1 => 
@@ -325,17 +324,13 @@ in
                     in evaluadorDeForma (p :&&: q) end 
             |   implicacion (prop1, prop2) => 
                     let val p = evaluadorDeForma (simpl prop1) and q = evaluadorDeForma (simpl prop2) 
-                    in evaluadorDeForma (evaluadorDeForma (p :=>: q)) end
+                    in evaluadorDeForma (p :=>: q) end
             |   equivalencia (prop1, prop2) =>
                     let val p = evaluadorDeForma (simpl prop1) and q = evaluadorDeForma (simpl prop2) 
                     in (p :<=>: q) end (* En teoría no ocupa evaluador de forma *)
             |   _ => evaluadorDeForma prop
     in
-        evaluadorDeForma p
+        evaluadorDeForma (evaluadorDeForma p)
     end
 end
 ;
-
-(*  ~ (p&false) => ~ ( ~ r& ~ q) *) 
-
-(* ~ false *)
