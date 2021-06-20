@@ -51,7 +51,8 @@ fun bonita prop =
                 in case presedencia < presedenciaAnterior of true => "(" ^ imprimirB(prop1,presedencia) ^ " <=> " ^ imprimirB (prop2,presedencia) ^ ")"|
                                                             false => "" ^ imprimirB(prop1,presedencia) ^ " <=> " ^ imprimirB (prop2,presedencia) ^ ""
                 end
-    in print (imprimirB(prop,primeraPresedencia))
+    in
+        print(imprimir(prop)^"\n"^imprimirB(prop,primeraPresedencia))
     end
 ;
 
