@@ -38,6 +38,7 @@ fun fnd prop =
         fun tomar_variables_atomicas vars_bools =
             [ map crear_variable_verdadera vars_bools ]
 
+        
         fun tomar_filas_verdaderas []                  = [] (* caso de cero variables *)
         |   tomar_filas_verdaderas (fila :: mas_filas) = 
             let
