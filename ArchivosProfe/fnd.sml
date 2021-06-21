@@ -61,7 +61,10 @@ fun fnd prop =
                 unir_por_conjuncion fila
             else 
                 (unir_por_conjuncion fila) :||: (recorrer_filas_verdaderas mas_filas)
-    in            
-        recorrer_filas_verdaderas filas_verdaderas
+    in  
+        if filas_verdaderas = [] then
+            constante false
+        else          
+            recorrer_filas_verdaderas filas_verdaderas
     end
 ;
