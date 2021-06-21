@@ -77,4 +77,139 @@ val compl5 = ~:( (~:(variable "p")) :&&: (~:((variable "q") :||: (variable "p"))
 val compl6 = ~:( ( (~:(variable "p")) :&&: (~:(((variable "q") :||: (variable "r")))) ) )
 (* Resultado: disyuncion(variable "p", disyuncion(variable "q", variable "r"))) *)
 val compl7 = (~:((variable "p") :&&: (constante false))) :=>: (~: ( (~:(variable "r")) :&&: (~:(variable "q"))))
-val compl8 = (~:((variable "p") :&&: (variable "p"))) :=>: (~: ( (~:(variable "r")) :&&: (~:(variable "q"))))
+val compl8 = (~:((variable "p") :&&: (variable "p"))) :=>: (~: ( (~:(variable "r")) :&&: (~:(variable "q"))));
+
+(*Pruebas vars*)
+
+vars pru1;
+vars pru2;
+vars pru4;
+vars pru7;
+vars prop8;
+vars prop15;
+vars eqComp;
+vars compl1;
+vars compl4;
+vars compl8;
+(*Pruebas gen_bools*)
+
+gen_bools 0;
+gen_bools 1;
+gen_bools 2;
+gen_bools 3;
+gen_bools 4;
+
+(*Pruebas bonita*)
+
+bonita pru1;
+bonita pru2;
+bonita pru3;
+bonita pru4;
+bonita pru5;
+bonita pru6;
+bonita pru7;
+bonita prop1;
+bonita prop2;
+bonita prop3;
+bonita prop4;
+bonita prop5;
+bonita prop6;
+bonita prop7;
+bonita prop8;
+bonita prop9;
+bonita prop10;
+bonita prop11;
+bonita prop12;
+bonita prop13;
+bonita prop14;
+bonita prop15;
+bonita prop16;
+bonita megaNeg;
+bonita eqComp;
+bonita eqCompDoble;
+bonita impComp;
+bonita compl1;
+bonita compl2;
+bonita compl3;
+bonita compl4;
+bonita compl5;
+bonita compl6;
+bonita compl7;
+bonita compl8;
+
+
+(*Pruebas fnd*)
+
+fnd pru1;
+fnd pru2;
+fnd pru3;
+fnd pru4;
+fnd pru5;
+fnd pru6;
+fnd pru7;
+fnd prop1;
+fnd prop2;
+fnd prop3;
+fnd prop4;
+fnd prop5;
+fnd prop6;
+fnd prop7;
+fnd prop8;
+fnd prop9;
+fnd prop10;
+fnd prop11;
+fnd prop12;
+fnd prop13;
+fnd prop14;
+fnd prop15;
+fnd prop16;
+fnd megaNeg;
+fnd eqComp;
+fnd eqCompDoble;
+fnd impComp;
+fnd compl1;
+fnd compl2;
+fnd compl3;
+fnd compl4;
+fnd compl5;
+fnd compl6;
+fnd compl7;
+fnd compl8;
+
+(*Pruebas simpl*)
+
+simpl pru1;
+simpl pru2;
+simpl pru3;
+simpl pru4;
+simpl pru5;
+simpl pru6;
+simpl pru7;
+simpl prop1;
+simpl prop2;
+simpl prop3;
+simpl prop4;
+simpl prop5;
+simpl prop6;
+simpl prop7;
+simpl prop8;
+simpl prop9;
+simpl prop10;
+simpl prop11;
+simpl prop12;
+simpl prop13;
+simpl prop14;
+simpl prop15;
+simpl prop16;
+simpl megaNeg;
+simpl eqComp;
+simpl eqCompDoble;
+simpl impComp;
+simpl compl1;
+simpl compl2;
+simpl compl3;
+simpl compl4;
+simpl compl5;
+simpl compl6;
+simpl compl7;
+simpl compl8;
