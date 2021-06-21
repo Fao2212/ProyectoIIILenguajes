@@ -52,7 +52,7 @@ fun bonita prop =
                                                             false => "" ^ imprimirB(prop1,presedencia) ^ " <=> " ^ imprimirB (prop2,presedencia) ^ ""
                 end
     in
-        print(imprimir(prop)^"\n"^imprimirB(prop,primeraPresedencia))
+        print(imprimir(prop)^"\n"^imprimirB(prop,primeraPresedencia) ^ "\n")
     end
 ;
 
