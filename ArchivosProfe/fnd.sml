@@ -52,18 +52,18 @@ fun fnd prop =
 
         val filas_verdaderas = tomar_filas_verdaderas lista_combinaciones_booleanas
 
-        fun unir_por_conjuncion [] = constante true
+        fun unir_por_conjuncion [] = constante true (* En teoría este caso es inalcanzable, pero se pone para evitar la advertencia del compilador *)
         |   unir_por_conjuncion (head::tail) = if tail = [] then head else head :&&: unir_por_conjuncion tail
         
-        fun recorrer_filas_verdaderas []                  = simpl prop (* caso de cero variables *)
+        fun recorrer_filas_verdaderas []                  = constante false (* Caso en que la proposición sea una contradicción *)
         |   recorrer_filas_verdaderas (fila :: mas_filas) = 
             if mas_filas = [] then (* caso de una fila restante *)
                 unir_por_conjuncion fila
             else 
                 (unir_por_conjuncion fila) :||: (recorrer_filas_verdaderas mas_filas)
     in  
-        if filas_verdaderas = [] then
-            constante false
+        if n = 0 then (* Caso en que la proposición no tenga variables *)
+            simpl prop
         else          
             recorrer_filas_verdaderas filas_verdaderas
     end
