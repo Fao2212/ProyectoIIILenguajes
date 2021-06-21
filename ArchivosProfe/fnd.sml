@@ -26,48 +26,42 @@ fun tabla_verdad prop =
     end
 ;
 
-fun crear_variable_positiva (var, bool) = if bool then variable var else ~:(variable var);
-
 fun fnd prop =
     let
-        (* variables de trabajo *)
         val variables = vars prop
         val n = length variables
         val lista_combinaciones_booleanas = gen_bools n
-    
+
+        fun crear_variable_verdadera (var, bool) = 
+            if bool then variable var else ~:(variable var);
+
         fun tomar_variables_atomicas vars_bools =
-            map crear_variable_positiva vars_bools
+            [ map crear_variable_verdadera vars_bools ]
 
-        fun unir_por_conjuncion [] = constante true
-        |   unir_por_conjuncion (head::tail) = if tail = [] then head else head :&&: unir_por_conjuncion tail
-
-        fun unir_por_disyuncion prop1 prop2 = prop1 :||: prop2
-
-        fun recorrer []                  = prop (* caso de cero variables *)
-        |   recorrer (fila :: mas_filas) = 
+        fun tomar_filas_verdaderas []                  = [] (* caso de cero variables *)
+        |   tomar_filas_verdaderas (fila :: mas_filas) = 
             let
                 val asociacion = as_vals variables fila
                 val resultado_fila = evalProp asociacion prop
             in
-                if n = 1 then (* caso de una variable *)
-                    prop
-                else if resultado_fila andalso mas_filas = [] then
-                    unir_por_conjuncion (tomar_variables_atomicas asociacion)
-                else if resultado_fila then (* caso de 2 o mas variables *)
-                    unir_por_disyuncion (unir_por_conjuncion (tomar_variables_atomicas asociacion)) (recorrer mas_filas)
+                if resultado_fila then
+                    (tomar_variables_atomicas asociacion) @ (tomar_filas_verdaderas mas_filas)
                 else
-                    recorrer mas_filas
+                    tomar_filas_verdaderas mas_filas
             end
-    in
-        recorrer lista_combinaciones_booleanas
+
+        val filas_verdaderas = tomar_filas_verdaderas lista_combinaciones_booleanas
+
+        fun unir_por_conjuncion [] = constante true
+        |   unir_por_conjuncion (head::tail) = if tail = [] then head else head :&&: unir_por_conjuncion tail
+        
+        fun recorrer_filas_verdaderas []                  = simpl prop (* caso de cero variables *)
+        |   recorrer_filas_verdaderas (fila :: mas_filas) = 
+            if mas_filas = [] then (* caso de una fila restante *)
+                unir_por_conjuncion fila
+            else 
+                (unir_por_conjuncion fila) :||: (recorrer_filas_verdaderas mas_filas)
+    in            
+        recorrer_filas_verdaderas filas_verdaderas
     end
 ;
-
-(* 
-p = v, q = v => v
-p = v, q = f => f
-p = f, q = v => v
-p = f, q = f => v
-
-(p ^ q) v (-p ^ q) v (-p ^ -q)
-*)
