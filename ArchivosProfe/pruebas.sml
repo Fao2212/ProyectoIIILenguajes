@@ -28,6 +28,44 @@ val vq = variable "q" ;
 val pru6 = vp :&&: vq :=>: vq :||: vp ; (* SÍ es una tautología *)
 val pru7 = vq :||: vp :=>: vp :&&: vq ; (* NO es una tautología *)
 
+(* Pruebas para fnd *)
+
+(* Casos de proposiciones solo con constantes *)
+val pru_cons_fnd_1 = constante false; (* Esperado: constante false *)
+val pru_cons_fnd_2 = constante true; (* Esperado: constante true *)
+val pru_cons_fnd_3 = ~:(constante false); (* Esperado: constante true *)
+val pru_cons_fnd_4 = ~:(constante true); (* Esperado: constante false *)
+val pru_cons_fnd_5 = (constante true) :||: (constante true); (* Esperado: constante true *)
+val pru_cons_fnd_6 = (constante true) :||: (constante false); (* Esperado: constante true *)
+val pru_cons_fnd_7 = (constante false) :||: (constante true); (* Esperado: constante true *)
+val pru_cons_fnd_8 = (constante false) :||: (constante false); (* Esperado: constante false *)
+val pru_cons_fnd_9 = (constante true) :&&: (constante true); (* Esperado: constante true *)
+val pru_cons_fnd_10 = (constante true) :&&: (constante false); (* Esperado: constante false *)
+val pru_cons_fnd_11 = (constante false) :&&: (constante true); (* Esperado: constante false *)
+val pru_cons_fnd_12 = (constante false) :&&: (constante false); (* Esperado: constante false *)
+val pru_cons_fnd_13 = (constante true) :=>: (constante true); (* Esperado: constante true *)
+val pru_cons_fnd_14 = (constante true) :=>: (constante false); (* Esperado: constante false *)
+val pru_cons_fnd_15 = (constante false) :=>: (constante true); (* Esperado: constante true *)
+val pru_cons_fnd_16 = (constante false) :=>: (constante false); (* Esperado: constante true *)
+val pru_cons_fnd_17 = (constante true) :<=>: (constante true); (* Esperado: constante true *)
+val pru_cons_fnd_18 = (constante true) :<=>: (constante false); (* Esperado: constante false *)
+val pru_cons_fnd_19 = (constante false) :<=>: (constante true); (* Esperado: constante false *)
+val pru_cons_fnd_20 = (constante false) :<=>: (constante false); (* Esperado: constante true *)
+
+(* Casos de proposiciones que son contradicciones *)
+val pru_contr_fnd_1 = ((variable "p") :||: (variable "q")) :<=>: (~:((variable "p") :||: (variable "q")));
+val pru_contr_fnd_2 = (variable "p") :&&: (~:(variable "p"));
+val pru_contr_fnd_3 = ((variable "p") :||: (variable "q")) :&&: ((~:(variable "p")) :&&: ((~:(variable "q"))));
+
+(* Casos de proposiciones con al menos una variable y que no son contradicciones *)
+val pru_taut_fnd_1 = (~:((variable "p") :=>: (variable "q"))) :<=>: ((variable "p") :&&: (~:(variable "q")));
+val pru_taut_fnd_2 = ((variable "p") :||: (variable "q")) :=>: ((variable "q") :=>: ((variable "p") :||: (variable "q")));
+val pru_taut_fnd_3 = ((variable "p") :||: (variable "q")) :||: ((~:(variable "p")) :&&: ((~:(variable "q"))));
+val pru_contin_fnd_1 = (variable "r") :=>: ( ((~:(variable "p")) :||: (variable "q")) :&&: ((variable "p") :&&: (~:(variable "q"))));
+val pru_contin_fnd_2 = (((variable "p") :=>: (variable "q")) :=>: (variable "r")) :<=>: (((variable "p") :&&: (~:(variable "r"))) :=>: (~:(variable "q")));
+val pru_contin_fnd_3 = ((~:((~:(variable "p")) :&&: (variable "r"))) :||: (variable "q")) :<=>: (((~:(variable "p")) :||: (variable "r")) :&&: (variable "q"));
+
+
 (* Pruebas para simpl *)
 
 (* Básicas *)
@@ -139,6 +177,33 @@ bonita compl8;
 
 
 (*Pruebas fnd*)
+
+fnd pru_cons_fnd_1;
+fnd pru_cons_fnd_2;
+fnd pru_cons_fnd_3;
+fnd pru_cons_fnd_4;
+fnd pru_cons_fnd_5;
+fnd pru_cons_fnd_6;
+fnd pru_cons_fnd_7;
+fnd pru_cons_fnd_8;
+fnd pru_cons_fnd_9;
+fnd pru_cons_fnd_10;
+fnd pru_cons_fnd_11;
+fnd pru_cons_fnd_12;
+fnd pru_cons_fnd_13;
+fnd pru_cons_fnd_14;
+fnd pru_cons_fnd_15;
+fnd pru_cons_fnd_16;
+fnd pru_cons_fnd_17;
+fnd pru_cons_fnd_18;
+fnd pru_cons_fnd_19;
+fnd pru_cons_fnd_20;
+
+fnd pru_taut_fnd_1;
+fnd pru_contin_fnd_1;
+fnd pru_contr_fnd_3;
+fnd pru_contr_fnd_4;
+fnd pru_contr_fnd_5;
 
 fnd pru1;
 fnd pru2;
