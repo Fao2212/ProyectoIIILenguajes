@@ -63,7 +63,6 @@ val megaNeg = negacion(negacion(negacion(negacion(constante true)))); (* constan
 val eqComp = equivalencia(constante true, conjuncion(constante true,variable "p")); (*Resultado: equivalencia(constante true,variable "p")*)
 val eqCompDoble = equivalencia(disyuncion(constante false,variable "q"),disyuncion(variable "p",constante false)); (*Resultado: equivalencia(variable "q",variable "p")*)
 val impComp = implicacion(disyuncion(constante true, variable "q"),conjuncion(constante false , variable "k")); (*Resultado: implicacion(constante true,constante false)*)
-(* CASOS *)
 val eq = equivalencia(constante true,constante false); (*eq*)
 val compl1 = ((variable "p") :=>: ~:((variable "q") :||: (variable "r"))) :&&: ((variable "p" :||: constante false)); 
 (* Resultado conjuncion(implicacion(variable "p", negacion(variable "q", variable "r *)
