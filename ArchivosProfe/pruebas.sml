@@ -137,6 +137,50 @@ gen_bools 2;
 gen_bools 3;
 gen_bools 4;
 
+(*Pruebas as_vals*)
+
+val g2 = [true,false]
+val g3 = [true,false,true]
+
+val pru = vars pru1;
+val av1 = as_vals pru g2;
+
+val pru = vars pru2;
+val av2 = as_vals pru g2;
+
+val pru = vars pru4;
+val av3 = as_vals pru g2;
+
+val pru = vars pru7;
+val av4 = as_vals pru g2;
+
+val pru = vars prop8;
+val av5 = as_vals pru g2;
+
+val pru = vars prop15;
+val av6 = as_vals pru g2;
+
+val pru = vars eqComp;
+val av7 = as_vals pru g2;
+
+val pru = vars compl1;
+val av8 = as_vals pru g3;
+
+val pru = vars compl4;
+val av9 = as_vals pru g2;
+
+val pru = vars compl8;
+val av10 = as_vals pru g2;
+
+
+(*Pruebas eval_prop*)
+
+evalProp av1 pru1; (*Sientase libre de cambiar las pruebas que quiera. Algunas no funcionan porque eran errores de las pruebas de e*)
+evalProp av4 pru7;
+evalProp av6 prop15;
+evalProp av8 compl1;
+evalProp av9 compl4;
+
 (*Pruebas bonita*)
 
 bonita pru1;
