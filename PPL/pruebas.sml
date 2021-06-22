@@ -125,8 +125,8 @@ gen_bools 3;
 gen_bools 4;
 
 (*Pruebas as_vals*)
-val g2 = [true,false]
-val g3 = [true,false,true]
+val g2 = [true,false];
+val g3 = [true,false,true];
 
 val pru = vars pru1;
 val av1 = as_vals pru g2;
@@ -178,6 +178,21 @@ evalProp amb2 compl5; (* Resultado esperado: true *)
 evalProp amb3 compl5; (* Resultado esperado: true *)
 evalProp amb4 compl5; (* Resultado esperado: false *)
 
+(* Pruebas taut *)
+
+taut pru_taut_fnd_1;
+taut pru_taut_fnd_2;
+taut pru_taut_fnd_3;
+taut prop1;
+taut prop10;
+taut prop16;
+taut megaNeg;
+taut eqComp;
+taut eqCompDoble;
+taut impComp;
+taut compl3;
+taut compl4;
+
 (* Pruebas bonita *)
 bonita pru1;
 bonita pru2;
@@ -220,7 +235,7 @@ bonita compl8;
 
 bonita (fnd pru_cons_fnd_1);
 bonita (fnd pru_cons_fnd_2);
-bonita (nd pru_cons_fnd_3);
+bonita (fnd pru_cons_fnd_3);
 bonita (fnd pru_cons_fnd_4);
 bonita (fnd pru_cons_fnd_5);
 bonita (fnd pru_cons_fnd_6);
