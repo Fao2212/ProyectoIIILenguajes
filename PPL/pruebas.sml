@@ -1,20 +1,7 @@
-(* pruebas con constantes *)
+(* Variables para las pruebas *)
 
 val f = constante false
 val t = constante true
-
-val prop2 = f :=>: f :<=>: ~: f :||: f
-val prop1 = f :=>: f :<=>: ~: f :=>: ~: f
-;
-
-val p = f;
-val q = t;
-
-val prop3 = p :=>: q :<=>: ~: p :||: q
-val prop4 = p :=>: q :<=>: ~: q :=>: ~: p
-;
-
-(* pruebas *)
 
 val pru1 = 	(variable "p") :=>: (variable "q") ;
 val pru2 = (constante true) :=>: (variable "q") ;
@@ -28,7 +15,7 @@ val vq = variable "q" ;
 val pru6 = vp :&&: vq :=>: vq :||: vp ; (* SÍ es una tautología *)
 val pru7 = vq :||: vp :=>: vp :&&: vq ; (* NO es una tautología *)
 
-(* Pruebas para fnd *)
+(* Variables para pruebas sobre fnd *)
 
 (* Casos de proposiciones solo con constantes *)
 val pru_cons_fnd_1 = constante false; (* Esperado: constante false *)
@@ -65,8 +52,7 @@ val pru_contin_fnd_1 = (variable "r") :=>: ( ((~:(variable "p")) :||: (variable 
 val pru_contin_fnd_2 = (((variable "p") :=>: (variable "q")) :=>: (variable "r")) :<=>: (((variable "p") :&&: (~:(variable "r"))) :=>: (~:(variable "q")));
 val pru_contin_fnd_3 = ((~:((~:(variable "p")) :&&: (variable "r"))) :||: (variable "q")) :<=>: (((~:(variable "p")) :||: (variable "r")) :&&: (variable "q"));
 
-
-(* Pruebas para simpl *)
+(* Variables para pruebas sobre simpl y otras*)
 
 (* Básicas *)
 
@@ -117,8 +103,9 @@ val compl6 = ~:( ( (~:(variable "p")) :&&: (~:(((variable "q") :||: (variable "r
 val compl7 = (~:((variable "p") :&&: (constante false))) :=>: (~: ( (~:(variable "r")) :&&: (~:(variable "q"))))
 val compl8 = (~:((variable "p") :&&: (variable "p"))) :=>: (~: ( (~:(variable "r")) :&&: (~:(variable "q"))));
 
-(*Pruebas vars*)
+(* Instrucciones de pruebas *)
 
+(* Pruebas para vars *)
 vars pru1;
 vars pru2;
 vars pru4;
@@ -129,8 +116,8 @@ vars eqComp;
 vars compl1;
 vars compl4;
 vars compl8;
-(*Pruebas gen_bools*)
 
+(*Pruebas gen_bools*)
 gen_bools 0;
 gen_bools 1;
 gen_bools 2;
@@ -138,7 +125,6 @@ gen_bools 3;
 gen_bools 4;
 
 (*Pruebas as_vals*)
-
 val g2 = [true,false]
 val g3 = [true,false,true]
 
@@ -173,16 +159,26 @@ val pru = vars compl8;
 val av10 = as_vals pru g2;
 
 
-(*Pruebas eval_prop*)
+(* Pruebas eval_prop *)
+val amb1 = [("p", true), ("q", true)];
+val amb2= [("p", true), ("q", false)];
+val amb3 = [("p", false), ("q", true)];
+val amb4 = [("p", false), ("q", false)];
 
-evalProp av1 pru1; (*Sientase libre de cambiar las pruebas que quiera. Algunas no funcionan porque eran errores de las pruebas de e*)
-evalProp av4 pru7;
-evalProp av6 prop15;
-evalProp av8 compl1;
-evalProp av9 compl4;
+evalProp amb1 compl2; (* Resultado esperado: false *)
+evalProp amb2 compl2; (* Resultado esperado: false *)
+evalProp amb3 compl2; (* Resultado esperado: false *)
+evalProp amb4 compl2; (* Resultado esperado: false *)
+evalProp amb1 compl4; (* Resultado esperado: false *)
+evalProp amb2 compl4; (* Resultado esperado: false *)
+evalProp amb3 compl4; (* Resultado esperado: false *)
+evalProp amb4 compl4; (* Resultado esperado: false *)
+evalProp amb1 compl5; (* Resultado esperado: true *)
+evalProp amb2 compl5; (* Resultado esperado: true *)
+evalProp amb3 compl5; (* Resultado esperado: true *)
+evalProp amb4 compl5; (* Resultado esperado: false *)
 
-(*Pruebas bonita*)
-
+(* Pruebas bonita *)
 bonita pru1;
 bonita pru2;
 bonita pru3;
@@ -222,103 +218,107 @@ bonita compl8;
 
 (*Pruebas fnd*)
 
-fnd pru_cons_fnd_1;
-fnd pru_cons_fnd_2;
-fnd pru_cons_fnd_3;
-fnd pru_cons_fnd_4;
-fnd pru_cons_fnd_5;
-fnd pru_cons_fnd_6;
-fnd pru_cons_fnd_7;
-fnd pru_cons_fnd_8;
-fnd pru_cons_fnd_9;
-fnd pru_cons_fnd_10;
-fnd pru_cons_fnd_11;
-fnd pru_cons_fnd_12;
-fnd pru_cons_fnd_13;
-fnd pru_cons_fnd_14;
-fnd pru_cons_fnd_15;
-fnd pru_cons_fnd_16;
-fnd pru_cons_fnd_17;
-fnd pru_cons_fnd_18;
-fnd pru_cons_fnd_19;
-fnd pru_cons_fnd_20;
+bonita (fnd pru_cons_fnd_1);
+bonita (fnd pru_cons_fnd_2);
+bonita (nd pru_cons_fnd_3);
+bonita (fnd pru_cons_fnd_4);
+bonita (fnd pru_cons_fnd_5);
+bonita (fnd pru_cons_fnd_6);
+bonita (fnd pru_cons_fnd_7);
+bonita (fnd pru_cons_fnd_8);
+bonita (fnd pru_cons_fnd_9);
+bonita (fnd pru_cons_fnd_10);
+bonita (fnd pru_cons_fnd_11);
+bonita (fnd pru_cons_fnd_12);
+bonita (fnd pru_cons_fnd_13);
+bonita (fnd pru_cons_fnd_14);
+bonita (fnd pru_cons_fnd_15);
+bonita (fnd pru_cons_fnd_16);
+bonita (fnd pru_cons_fnd_17);
+bonita (fnd pru_cons_fnd_18);
+bonita (fnd pru_cons_fnd_19);
+bonita (fnd pru_cons_fnd_20);
 
-fnd pru_taut_fnd_1;
-fnd pru_contin_fnd_1;
-fnd pru_contr_fnd_3;
-fnd pru_contr_fnd_4;
-fnd pru_contr_fnd_5;
+bonita (fnd pru_taut_fnd_1);
+bonita (fnd pru_taut_fnd_2);
+bonita (fnd pru_taut_fnd_3);
+bonita (fnd pru_contin_fnd_1);
+bonita (fnd pru_contin_fnd_2);
+bonita (fnd pru_contin_fnd_3);
+bonita (fnd pru_contr_fnd_1);
+bonita (fnd pru_contr_fnd_2);
+bonita (fnd pru_contr_fnd_3);
 
-fnd pru1;
-fnd pru2;
-fnd pru3;
-fnd pru4;
-fnd pru5;
-fnd pru6;
-fnd pru7;
-fnd prop1;
-fnd prop2;
-fnd prop3;
-fnd prop4;
-fnd prop5;
-fnd prop6;
-fnd prop7;
-fnd prop8;
-fnd prop9;
-fnd prop10;
-fnd prop11;
-fnd prop12;
-fnd prop13;
-fnd prop14;
-fnd prop15;
-fnd prop16;
-fnd megaNeg;
-fnd eqComp;
-fnd eqCompDoble;
-fnd impComp;
-fnd compl1;
-fnd compl2;
-fnd compl3;
-fnd compl4;
-fnd compl5;
-fnd compl6;
-fnd compl7;
-fnd compl8;
+bonita (fnd pru1);
+bonita (fnd pru2);
+bonita (fnd pru3);
+bonita (fnd pru4);
+bonita (fnd pru5);
+bonita (fnd pru6);
+bonita (fnd pru7);
+bonita (fnd prop1);
+bonita (fnd prop2);
+bonita (fnd prop3);
+bonita (fnd prop4);
+bonita (fnd prop5);
+bonita (fnd prop6);
+bonita (fnd prop7);
+bonita (fnd prop8);
+bonita (fnd prop9);
+bonita (fnd prop10);
+bonita (fnd prop11);
+bonita (fnd prop12);
+bonita (fnd prop13);
+bonita (fnd prop14);
+bonita (fnd prop15);
+bonita (fnd prop16);
+bonita (fnd megaNeg);
+bonita (fnd eqComp);
+bonita (fnd eqCompDoble);
+bonita (fnd impComp);
+bonita (fnd compl1);
+bonita (fnd compl2);
+bonita (fnd compl3);
+bonita (fnd compl4);
+bonita (fnd compl5);
+bonita (fnd compl6);
+bonita (fnd compl7);
+bonita (fnd compl8);
 
 (*Pruebas simpl*)
 
-simpl pru1;
-simpl pru2;
-simpl pru3;
-simpl pru4;
-simpl pru5;
-simpl pru6;
-simpl pru7;
-simpl prop1;
-simpl prop2;
-simpl prop3;
-simpl prop4;
-simpl prop5;
-simpl prop6;
-simpl prop7;
-simpl prop8;
-simpl prop9;
-simpl prop10;
-simpl prop11;
-simpl prop12;
-simpl prop13;
-simpl prop14;
-simpl prop15;
-simpl prop16;
-simpl megaNeg;
-simpl eqComp;
-simpl eqCompDoble;
-simpl impComp;
-simpl compl1;
-simpl compl2;
-simpl compl3;
-simpl compl4;
-simpl compl5;
-simpl compl6;
-simpl compl7;
-simpl compl8;
+bonita (simpl pru1);
+bonita (simpl pru2);
+bonita (simpl pru3);
+bonita (simpl pru4);
+bonita (simpl pru5);
+bonita (simpl pru6);
+bonita (simpl pru7);
+bonita (simpl prop1);
+bonita (simpl prop2);
+bonita (simpl prop3);
+bonita (simpl prop4);
+bonita (simpl prop5);
+bonita (simpl prop6);
+bonita (simpl prop7);
+bonita (simpl prop8);
+bonita (simpl prop9);
+bonita (simpl prop10);
+bonita (simpl prop11);
+bonita (simpl prop12);
+bonita (simpl prop13);
+bonita (simpl prop14);
+bonita (simpl prop15);
+bonita (simpl prop16);
+bonita (simpl megaNeg);
+bonita (simpl eqComp);
+bonita (simpl eqCompDoble);
+bonita (simpl impComp);
+bonita (simpl compl1);
+bonita (simpl compl2);
+bonita (simpl compl3);
+bonita (simpl compl4);
+bonita (simpl compl5);
+bonita (simpl compl6);
+bonita (simpl compl7);
+bonita (simpl compl8);
